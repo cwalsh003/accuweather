@@ -41,7 +41,6 @@ def getData():
 	myMax = []
 	myMin = []
 	string = ""
-	string2 = ""
 
 	# print(myDict['DailyForecasts'])
 	for keys in myDict['DailyForecasts']:
@@ -51,6 +50,9 @@ def getData():
 			myPrec.append(keys['Day']['PrecipitationProbability'])
 
 	checkPercent = 0
+	cropMax = 0
+	cropMin = 0
+	cropPrec = 0
 
 	# FIXME place holders for objects
 
@@ -68,13 +70,13 @@ def getData():
 			if sum >= crop.rainPerWeek * 1.2:
 				checkPercent += 10 / 42
 			else:
-				string += "Crop max temperature exceeded on day " + n + "\n"
+				cropMax += 1
 
 		else:
 			checkPercent += 20 / 42
 
 		if crop.minTemp > myMin[n] and crop.minTemp > myMin[n+1] and crop.minTemp > myMin[n+2]:
-			string += "Crop minimum temperature not reached on day " + n + "\n"
+			cropMin += 1
 		else:
 			checkPercent += 20 / 42
 
@@ -85,19 +87,25 @@ def getData():
 				sum += myPrec[j+n]
 
 		if crop.rainPerWeek < sum/100:
-			string += "Crop required rain per week not reached on day " + n + "\n"
+			cropPrec += 1
 		else:
 			checkPercent += 60 / 39
 
 	if checkPercent < 40:
-		string2 += "Recommendation: Do Not Grow:\n"
+		string += "Recommendation: Do Not Grow:\n"
 	elif checkPercent < 70:
-		string2 += "Recommendation: Grow, check condition errors:\n"
+		string += "Recommendation: Grow, check condition errors:\n"
 	else:
-		string2 += "Recommendation: Grow:\n"
+		string += "Recommendation: Grow:\n"
 
+	if cropMax != 0:
+		string += "This crop's max temperature is exceeded for " + cropMax + "days during this period.\n"
+	if cropMin != 0:
+		string += "This crop's minimum temperature is not meet for " + cropMin + " days during this period.\n"
+	if cropPrec != 0:
+		string += "This crop's required rain per week is not meet for " + cropPrec + " days during this period.\n"
 
-	return json.dumps(myNewDict)
+	return json.dumps(string)
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port = 8000, debug = True)
