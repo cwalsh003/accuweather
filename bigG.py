@@ -44,7 +44,7 @@ def getData():
 
 	# print(myDict['DailyForecasts'])
 	for keys in myDict['DailyForecasts']:
-			myNewDict[keys['Temperature']] = {}
+			#myNewDict[keys['Temperature']] = {}
 			myMax.append(keys['Temperature']['Maximum']['Value'])
 			myMin.append(keys['Temperature']['Minimum']['Value'])
 			myPrec.append(keys['Day']['PrecipitationProbability'])
@@ -61,17 +61,16 @@ def getData():
 		maxTemp = 75
 		minTemp = 35
 
-	for n in range(45):
+	for n in range(39):
 
 		if crop.maxTemp < myMax[n] and crop.maxTemp < myMax[n+1] and crop.maxTemp < myMax[n+2]:
-			sum = 0
+			requiredrain = 0
 			for i in range(7):
-				sum += myPrec[i+n]
-			if sum >= crop.rainPerWeek * 1.2:
+                requiredrain += myPrec[i+n]
+			if requiredrain >= crop.rainPerWeek * 1.2:
 				checkPercent += 10 / 42
 			else:
 				cropMax += 1
-
 		else:
 			checkPercent += 20 / 42
 
@@ -82,11 +81,10 @@ def getData():
 
 	for n in range(39):
 		for j in range(7):
-
+            rainneeded = 0
 			if myPrec[j+n] > 25:
-				sum += myPrec[j+n]
-
-		if crop.rainPerWeek < sum/100:
+                rainneeded += myPrec[j+n]
+		if crop.rainPerWeek < rainneeded/100:
 			cropPrec += 1
 		else:
 			checkPercent += 60 / 39
@@ -99,7 +97,7 @@ def getData():
 		string += "Recommendation: Grow:\n"
 
 	if cropMax != 0:
-		string += "This crop's max temperature is exceeded for " + cropMax + "days during this period.\n"
+		string += "This crop's max temperature is exceeded for " + cropMax + " days during this period.\n"
 	if cropMin != 0:
 		string += "This crop's minimum temperature is not meet for " + cropMin + " days during this period.\n"
 	if cropPrec != 0:
