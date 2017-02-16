@@ -8,7 +8,7 @@ from flask import json
 import time
 
 app = Flask(__name__)
-
+dog = 3
 
 @app.route('/data')
 def getData():
